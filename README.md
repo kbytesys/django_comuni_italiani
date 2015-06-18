@@ -1,4 +1,4 @@
-# DJango Comuni Italiani
+# Django Comuni Italiani
 ### Django app for Italian cities and regions
 
 ----
