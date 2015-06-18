@@ -51,7 +51,7 @@ applicazioni che svilupperai potrebbero essere legati a dati soggetti a cambiame
 
 ```bash
 
-./manage.py import_regioni_prov<br>
+./manage.py import_regioni_prov
 ./manage.py import_comuni
 
 ```
@@ -91,7 +91,7 @@ e l'altra.
 
 ### Changelog
 
-18/06/2015 1.0.0 - Primo rilascio applicazione
+18/06/2015 1.0.0 - Primo rilascio applicazione<br>
 inprogress 1.0.1 - Correzioni documentazione e pulizia codice
 
 ### TODO
