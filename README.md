@@ -51,7 +51,7 @@ applicazioni che svilupperai potrebbero essere legati a dati soggetti a cambiame
 
 ```bash
 
-./manage.py import_regioni_prov
+./manage.py import_regioni_prov<br>
 ./manage.py import_comuni
 
 ```
