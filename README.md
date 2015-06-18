@@ -64,6 +64,19 @@ ed eseguire il classico:
 
 ```
 
+Nella configurazione di django aggiungi l'applicazione dove ti è più conveniente:
+
+```python
+
+INSTALLED_APPS = (
+    ...
+    'comuni_italiani',
+    ...
+)
+
+
+```
+
 # FAQ
 **A quando risale l'ultimo aggiornamento dei dati?**<br>
 L'applicazione ha già inclusi i dati istat aggiornati al 30 gennaio 2015
