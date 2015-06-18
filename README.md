@@ -77,7 +77,7 @@ INSTALLED_APPS = (
 
 ```
 
-# FAQ
+### FAQ
 **A quando risale l'ultimo aggiornamento dei dati?**<br>
 L'applicazione ha già inclusi i dati istat aggiornati al 30 gennaio 2015
 
@@ -90,10 +90,10 @@ Assumento che tu possa farlo sbloccando temporaneamente le foreign keys, non è 
 il codice istat di un comune può cambiare. Per questo motivo i comuni hanno una chiave numerica autogenerata che potrebbe non essere coerente tra un'importazione
 e l'altra.
 
-# Changelog
+### Changelog
 
 18/06/2015 1.0.0 - Primo rilascio applicazione
 
-# TODO
+### TODO
  - Viste per chiamate ajax per reperire comuni, province e regioni
  - Form temizzabili per selezionare una provincia da regione e un comune da provincia
