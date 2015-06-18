@@ -1,9 +1,11 @@
 __author__ = 'kbyte'
-from distutils.core import setup
+from setuptools import setup, find_packages
 setup(
     name='django-comuni-italiani',
-    packages=['comuni_italiani'],
-    version='1.0',
+    packages=find_packages(),
+    # package_data={'': ['']},
+    include_package_data=True,
+    version='1.0.0',
     description='A simple django (>= 1.7) app for Italian cities and regions',
     author='Andrea Briganti',
     author_email='kbytesys@gmail.com',
