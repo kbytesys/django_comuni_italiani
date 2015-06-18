@@ -1,4 +1,4 @@
-__author__ = 'kbyte'
+# -*- coding: utf-8 -*-
 
 from django.apps import AppConfig
 

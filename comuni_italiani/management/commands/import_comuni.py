@@ -1,5 +1,4 @@
-__author__ = 'kbyte'
-
+# -*- coding: utf-8 -*-
 import argparse
 import csv
 import sys

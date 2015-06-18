@@ -1,1 +1,1 @@
-__author__ = 'kbyte'
+# -*- coding: utf-8 -*-

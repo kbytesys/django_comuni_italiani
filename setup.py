@@ -1,4 +1,4 @@
-__author__ = 'kbyte'
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 setup(
     name='django-comuni-italiani',

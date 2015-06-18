@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from django.db import models
-# Create your models here.
+
 class Regione(models.Model):
     codice_regione = models.IntegerField(primary_key=True, verbose_name="codice Istat")
     name = models.CharField(max_length=300, db_index=True, verbose_name='nome')
