@@ -24,39 +24,27 @@ class Command(BaseCommand):
         reader = csv.DictReader(csvfile, delimiter=';')
 
         '''
-        Importazione delle regioni utilizzando un dizionario
+        Importazione delle regioni, province e città metropolitane
         '''
 
-        regioni = dict()
+        regioni_keys = set()
 
         for row in reader:
             codice_regione = row['Codice regione']
 
-            if codice_regione is None or len(codice_regione) == 0 or codice_regione in regioni.keys():
+            if codice_regione is None or len(codice_regione) == 0:
                 continue
 
-            r = Regione()
-            r.codice_regione = int(codice_regione)
-            r.name = row['Denominazione regione']
+            codice_regione = int(codice_regione)
 
-            regioni[codice_regione] = r
+            if codice_regione not in regioni_keys:
+                r = Regione()
+                r.codice_regione = codice_regione
+                r.name = row['Denominazione regione']
+                regioni_keys.add(codice_regione)
+                r.save()
 
-        for r in regioni.values():
-            r.save()
-
-        '''
-        Importazione delle provincie e delle città metropolitane
-        '''
-
-        csvfile.seek(0)
-        reader = csv.DictReader(csvfile, delimiter=';')
-
-        for row in reader:
-            codice_provincia = row['Codice provincia']
-
-            if codice_provincia is None or len(codice_provincia) == 0:
-                continue
-
+            codice_provincia = int(row['Codice provincia'])
             codice_citta_metropolitana = None
 
             try:
@@ -75,9 +63,9 @@ class Command(BaseCommand):
 
             p = Provincia()
             p.name = name
-            p.codice_provincia = int(codice_provincia)
+            p.codice_provincia = codice_provincia
             p.codice_targa = row['Sigla automobilistica']
-            p.regione_id = int(row['Codice regione'])
+            p.regione_id = codice_regione
             p.save()
 
         self.stdout.write("Importazione completata")

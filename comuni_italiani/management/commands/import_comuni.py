@@ -128,21 +128,18 @@ class Command(BaseCommand):
         '''
         self.stdout.write("Controllo comuni con lo stesso nome\n")
         qs = Comune.objects.values('name').annotate(count=Count('id')).filter(count__gt=1).order_by('name')
-        counter = 0
         for item in qs:
-            counter += 1
             for item2 in Comune.objects.filter(name=item['name']):
                 print("%s - %s - %s" % (item2.codice_istat, item2.name, item2.provincia.name))
-        self.stdout.write("Numero totale comuni con lo stesso nome: %d\n" % counter)
+        self.stdout.write("Numero totale comuni con lo stesso nome: %d\n" % len(qs))
 
         '''
         Controlla i comuni eventualmente rimossi ma presenti nel database
         '''
         self.stdout.write("Controllo comuni rimossi\n")
-        counter = 0
-        for comune in Comune.objects.exclude(codice_istat__in=comuni_rilevati):
-            counter += 1
+        qs = Comune.objects.exclude(codice_istat__in=comuni_rilevati)
+        for comune in qs:
             print("%s - %s - %s" % (comune.codice_istat, comune.name, comune.provincia.name))
-        self.stdout.write("Numero totale comuni presenti nel db ma rimossi da istat: %d\n" % counter)
+        self.stdout.write("Numero totale comuni presenti nel db ma rimossi da istat: %d\n" % len(qs))
 
         self.stdout.write("Importazione completata")
