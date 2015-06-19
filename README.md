@@ -43,7 +43,14 @@ INSTALLED_APPS = (
 
 ```
 
-Al primo ```migrate``` o ```syncdb``` verranno importati gli ultimi dati disponibili che potete trovare nella directory fixtures dell'app.
+Un dump dei dati più aggiornati al momento del rilascio è distribuito sotto forma di fixture. Esso può essere caricato
+con il seguente comando:
+
+```bash
+
+./manage.py loaddata --app comuni_italiani comuni_italiani.json
+
+```
 
 ### Aggiornamento dei dati
 Purtroppo l'aggiornamento dei dati non è un'operazione semplice, soprattutto perché i tuoi dati contenuti nelle
@@ -92,7 +99,7 @@ e l'altra.
 ### Changelog
 
 18/06/2015 1.0.0 - Primo rilascio applicazione<br>
-inprogress 1.0.1 - Correzioni documentazione e pulizia codice
+19/06/2015 1.0.1 - Correzioni documentazione, pulizia codice e disattivazione caricamento automatico fixtures
 
 ### TODO
  - Viste per chiamate ajax per reperire comuni, province e regioni
