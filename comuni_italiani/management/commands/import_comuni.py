@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import argparse
 import csv
-import sys
-import os
 import locale
+import os
+import sys
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
+
 from comuni_italiani.models import *
 
 default_comuni_file = os.path.join(

@@ -4,6 +4,7 @@ import csv
 import os
 
 from django.core.management.base import BaseCommand, CommandError
+
 from comuni_italiani.models import *
 
 default_regioni_file = os.path.join(
