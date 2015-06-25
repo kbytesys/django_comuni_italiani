@@ -87,7 +87,7 @@ In ogni caso sarà vostro compito fare i dovuti aggiustamenti.
 **A quando risale l'ultimo aggiornamento dei dati?**<br>
 L'applicazione ha già inclusi i dati istat aggiornati al 30 gennaio 2015
 
-**Perchè documentazione e documentazione sono in Italiano?**<br>
+**Perchè documentazione e codice sorgente sono in Italiano?**<br>
 Questa appliazione ha uno scopo intimamente riservato al "mercato" italiano. In genere se si ha la necessità
 di utilizzare luoghi e lingue diverse consiglio l'uso di <a href="https://github.com/yourlabs/django-cities-light" target="_blank">django-cities-light</a> oppure di <a href="https://github.com/coderholic/django-cities" target="_blank">django-cities</a>
 
