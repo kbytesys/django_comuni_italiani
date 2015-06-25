@@ -43,6 +43,19 @@ INSTALLED_APPS = (
 
 ```
 
+L'app dispone di alcune viste per chiamate ajax e alto, dovrete dunque aggiungere gli url a quelli del vostro
+progetto:
+
+```python
+
+urlpatterns = [
+    ...
+    url(r'^comuni_italiani/', include('comuni_italiani.urls', namespace='comuni_italiani')),
+    ...
+]
+
+```
+
 Un dump dei dati più aggiornati al momento del rilascio è distribuito sotto forma di fixture. Esso può essere caricato
 con il seguente comando:
 
@@ -51,6 +64,11 @@ con il seguente comando:
 ./manage.py loaddata --app comuni_italiani comuni_italiani.json
 
 ```
+
+### Chiamate ajax/json
+L'app vi fornisce alcune chiamate per l'elenco e la ricerca delle diverse entità attraverso json/ajax.
+
+Troverete la documentazione completa nel <a href="https://github.com/kbytesys/django_comuni_italiani/wiki/ChiamateJsonAjax" target="_blank">wiki</a>.
 
 ### Aggiornamento dei dati
 Purtroppo l'aggiornamento dei dati non è un'operazione semplice, soprattutto perché i tuoi dati contenuti nelle
@@ -97,10 +115,9 @@ il codice istat di un comune può cambiare. Per questo motivo i comuni hanno una
 e l'altra.
 
 ### Changelog
-
+??/??/???? 1.1.0 - Chiamate ajax/json per ricerca, aggiornamento dati istat<br>
 18/06/2015 1.0.0 - Primo rilascio applicazione<br>
 19/06/2015 1.0.1 - Correzioni documentazione, pulizia codice e disattivazione caricamento automatico fixtures
 
 ### TODO
- - Viste per chiamate ajax per reperire comuni, province e regioni
  - Form temizzabili per selezionare una provincia da regione e un comune da provincia
