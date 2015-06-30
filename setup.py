@@ -5,7 +5,7 @@ setup(
     packages=find_packages(),
     # package_data={'': ['']},
     include_package_data=True,
-    version='1.0.1',
+    version='1.1.0',
     install_requires=[
         'Django>=1.7',
     ],
@@ -13,7 +13,7 @@ setup(
     author='Andrea Briganti',
     author_email='kbytesys@gmail.com',
     url='https://github.com/kbytesys/django_comuni_italiani',
-    download_url='https://github.com/kbytesys/django_comuni_italiani/tarball/v1.0.1',
+    download_url='https://github.com/kbytesys/django_comuni_italiani/tarball/v1.1.0',
     keywords=['django', 'comuni', 'regioni', 'province'],
     license='GNU LGPL v2',
     classifiers=[

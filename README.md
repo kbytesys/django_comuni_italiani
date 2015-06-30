@@ -115,7 +115,7 @@ il codice istat di un comune può cambiare. Per questo motivo i comuni hanno una
 e l'altra.
 
 ### Changelog
-??/??/???? 1.1.0 - Chiamate ajax/json per ricerca, aggiornamento dati istat<br>
+30/06/2015 1.1.0 - Chiamate ajax/json per ricerca<br>
 18/06/2015 1.0.0 - Primo rilascio applicazione<br>
 19/06/2015 1.0.1 - Correzioni documentazione, pulizia codice e disattivazione caricamento automatico fixtures
 
