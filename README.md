@@ -70,6 +70,21 @@ L'app vi fornisce alcune chiamate per l'elenco e la ricerca delle diverse entit�
 
 Troverete la documentazione completa nel <a href="https://github.com/kbytesys/django_comuni_italiani/wiki/ChiamateJsonAjax" target="_blank">wiki</a>.
 
+### Supporto django-autocomplete-light
+Se utilizzate django-autocomplete-light potete facilmente aggiungere le definizioni per il completamento automatico aggiungendo
+la seguente app tra quelle installate:
+
+```python
+INSTALLED_APPS = (
+    ...
+    'comuni_italiani',
+    'comuni_italiani'.autocomplete,
+    ...
+)
+```
+
+Ovviamente dovete aver aggiunto autocomplete light seguendo la documentazione che troverete  <a href="https://github.com/yourlabs/django-autocomplete-light">qui</a>
+
 ### Aggiornamento dei dati
 Purtroppo l'aggiornamento dei dati non è un'operazione semplice, soprattutto perché i tuoi dati contenuti nelle
 applicazioni che svilupperai potrebbero essere legati a dati soggetti a cambiamenti (hanno abrogato una provincia? maledetti!)
@@ -115,6 +130,7 @@ il codice istat di un comune può cambiare. Per questo motivo i comuni hanno una
 e l'altra.
 
 ### Changelog
+11/12/2015 1.2.0 - Supporto django-autocomplete-light<br>
 30/06/2015 1.1.0 - Chiamate ajax/json per ricerca<br>
 18/06/2015 1.0.0 - Primo rilascio applicazione<br>
 19/06/2015 1.0.1 - Correzioni documentazione, pulizia codice e disattivazione caricamento automatico fixtures
