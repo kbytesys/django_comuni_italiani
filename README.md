@@ -78,7 +78,7 @@ la seguente app tra quelle installate:
 INSTALLED_APPS = (
     ...
     'comuni_italiani',
-    'comuni_italiani'.autocomplete,
+    'comuni_italiani.autocomplete',
     ...
 )
 ```
