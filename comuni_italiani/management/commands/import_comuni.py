@@ -48,7 +48,7 @@ class Command(BaseCommand):
         comuni_rilevati = set()
 
         for row in reader:
-            codice_istat = row['Codice Istat del Comune \n(formato numerico)']
+            codice_istat = row['Codice Comune formato numerico']
 
             if codice_istat is None or len(codice_istat) == 0:
                 continue
@@ -62,12 +62,13 @@ class Command(BaseCommand):
 
             comuni_rilevati.add(codice_istat)
 
-            name = row['Solo denominazione in italiano']
-            provincia_id = int(row['Codice Provincia *'])
-            codice_catastale = row['Codice Catastale ']
-            is_capoluogo = row['Comune capoluogo di provincia'] == '1'
-            altitudine = locale.atoi(row['Altitudine del centro (metri)'])
-            superficie = locale.atof(row['Superficie territoriale (kmq) al 09/10/2011'])
+            name = row['Denominazione in italiano']
+            provincia_id = int(row['Codice Provincia (1)'])
+            codice_catastale = row['Codice Catastale del comune']
+            is_capoluogo = row['Flag Comune capoluogo di provincia'] == '1'
+            # Nei dati del 2016 altitudine e superficie non sono stati inseriti
+            # altitudine = locale.atoi(row['Altitudine del centro (metri)'])
+            # superficie = locale.atof(row['Superficie territoriale (kmq) al 09/10/2011'])
             popolazione = locale.atoi(row['Popolazione legale 2011 (09/10/2011)'])
             citta_metropolitana_id = None
             try:
@@ -77,11 +78,12 @@ class Command(BaseCommand):
 
             try:
                 r = Comune.objects.get(codice_istat=codice_istat)
-
+                # Nei dati del 2016 altitudine e superficie non sono stati inseriti
+                #    r.is_capoluogo == is_capoluogo and r.altitudine == altitudine and r.superficie == superficie and \
                 if r.codice_istat == codice_istat and r.name == name and r.provincia_id == provincia_id and \
                     r.codice_catastale == codice_catastale and r.citta_metropolitana_id == citta_metropolitana_id and \
-                    r.is_capoluogo == is_capoluogo and r.altitudine == altitudine and r.superficie == superficie and \
-                        r.popolazione == popolazione:
+                    r.is_capoluogo == is_capoluogo and \
+                    r.popolazione == popolazione:
                     continue
                 else:
                     ignore_me = False
@@ -111,8 +113,9 @@ class Command(BaseCommand):
             r.codice_catastale = codice_catastale
             r.citta_metropolitana_id = citta_metropolitana_id
             r.is_capoluogo = is_capoluogo
-            r.altitudine = altitudine
-            r.superficie = superficie
+            # Nei dati del 2016 altitudine e superficie non sono stati inseriti
+            # r.altitudine = altitudine
+            # r.superficie = superficie
             r.popolazione = popolazione
 
             r.save()
@@ -135,12 +138,22 @@ class Command(BaseCommand):
         self.stdout.write("Numero totale comuni con lo stesso nome: %d\n" % len(qs))
 
         '''
-        Controlla i comuni eventualmente rimossi ma presenti nel database
+        Controlla i comuni eventualmente rimossi ma presenti nel database. Prima veniva usata una query diretta
+        con exclude, ma putroppo ha iniziato a non funzionare con sqlite.
         '''
         self.stdout.write("Controllo comuni rimossi\n")
-        qs = Comune.objects.exclude(codice_istat__in=comuni_rilevati)
-        for comune in qs:
+        comuni_rilevati_db = set()
+
+        for comune in Comune.objects.all():
+            comuni_rilevati_db.add(comune.codice_istat)
+
+        comuni_eliminati_ids = comuni_rilevati_db - comuni_rilevati
+        comuni_eliminati = 0
+
+        for comune in Comune.objects.filter(codice_istat__in=comuni_eliminati_ids).order_by('codice_istat'):
             print("%s - %s - %s" % (comune.codice_istat, comune.name, comune.provincia.name))
-        self.stdout.write("Numero totale comuni presenti nel db ma rimossi da istat: %d\n" % len(qs))
+            comuni_eliminati += 1
+
+        self.stdout.write("Numero totale comuni presenti nel db ma rimossi da istat: %d\n" % comuni_eliminati)
 
         self.stdout.write("Importazione completata")

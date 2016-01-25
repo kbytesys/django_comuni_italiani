@@ -129,11 +129,13 @@ Assumento che tu possa farlo sbloccando temporaneamente le foreign keys, non è 
 il codice istat di un comune può cambiare. Per questo motivo i comuni hanno una chiave numerica autogenerata che potrebbe non essere coerente tra un'importazione
 e l'altra.
 
+**Nei nuovi dati non trovo più la superfice e l'altitudine dei comuni!**<br>
+Nei dati del 2016 l'Istat ha deciso di non includere quelle informazioni nelle loro esportazioni.
+
 ### Changelog
+25/01/2016 1.3.0 - Aggiornamento dati e importazione al 1 gennaio 2016<br>
 11/12/2015 1.2.0 - Supporto django-autocomplete-light<br>
 30/06/2015 1.1.0 - Chiamate ajax/json per ricerca<br>
-18/06/2015 1.0.0 - Primo rilascio applicazione<br>
-19/06/2015 1.0.1 - Correzioni documentazione, pulizia codice e disattivazione caricamento automatico fixtures
 
 ### TODO
  - Form temizzabili per selezionare una provincia da regione e un comune da provincia
