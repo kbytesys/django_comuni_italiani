@@ -83,7 +83,81 @@ INSTALLED_APPS = (
 )
 ```
 
-Ovviamente dovete aver aggiunto autocomplete light seguendo la documentazione che troverete  <a href="https://github.com/yourlabs/django-autocomplete-light">qui</a>
+Ovviamente dovete aver aggiunto autocomplete light seguendo la documentazione che troverete  <a href="https://github.com/yourlabs/django-autocomplete-light">qui</a>.
+
+Gli URL a disposizione per l'autocompletamento sono i seguenti:
+
+*  `regione-autocomplete`
+*  `provincia-autocomplete`
+*  `cittametropolitana-autocomplete`
+*  `comune-autocomplete`
+
+Supportano il _forward_ (filtro selezionando oggetto padre, es. regione => provincia) tutti tranne regione-autocomplete.
+
+### Un esempio
+
+Model con _ForeignKey_ ad un comune e un form con `django-autocomplete-light`:
+
+```python
+# models.py
+
+class Anagrafica(models.Model):
+    nome = models.CharField(max_length=32)
+    email = models.EmailField()
+    citta = models.ForeignKey(
+        'comuni_italiani.Comune', on_delete=models.PROTECT
+    )
+
+```
+
+```python
+# urls.py
+
+from django.urls import path, include
+
+urlpatterns = [
+	# i tuoi url, es. admin
+	path('admin/', admin.site.urls),
+	# includi gli URLs per l'autocompletamento
+	path('ac/comuni/', include('comuni_italiani.autocomplete.urls')),
+]
+```
+
+```python
+# forms.py
+
+from dal import autocomplete
+from django import forms
+from . import models
+
+
+class AnagraficaForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Anagrafica
+        fields = ('__all__')
+        widgets = {
+            'comune': autocomplete.ModelSelect2Multiple(
+                url='comune-autocomplete'
+            )
+        }
+```
+
+Potete verificarne il funzionamento nell'admin:
+
+```python
+# admin.py
+
+from django.contrib import admin
+from . import models
+from . import forms
+
+
+@admin.register(models.Anagrafica)
+class AnagraficaAdmin(admin.ModelAdmin):
+    form = forms.AnagraficaForm
+```
+
 
 ### Aggiornamento dei dati
 Purtroppo l'aggiornamento dei dati non è un'operazione semplice, soprattutto perché i tuoi dati contenuti nelle
@@ -139,3 +213,4 @@ Nei dati del 2016 l'Istat ha deciso di non includere quelle informazioni nelle l
 
 ### TODO
  - Form temizzabili per selezionare una provincia da regione e un comune da provincia
+(se si usa [django-autocomplete-light](https://github.com/yourlabs/django-autocomplete-light) non c'è bisogno).
