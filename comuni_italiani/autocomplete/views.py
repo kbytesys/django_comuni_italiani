@@ -2,11 +2,14 @@ from django.conf import settings
 from dal.autocomplete import Select2QuerySetView
 from .. import models
 
+RESULTS_PER_PAGE = getattr(settings, "COMUNI_ITALIANI_AUTOCOMPLETE_RESULTS", 10)
+
 
 class BaseAutocomplete(Select2QuerySetView):
     model_clazz = None
     limit_results = None
     forwarded_field = None
+    paginate_by = RESULTS_PER_PAGE
 
     def get_queryset(self):
         qs = self.model_clazz.objects.all()
