@@ -1,25 +1,25 @@
-from django.conf.urls import url
+from django.urls import path
 from . import views
 
 
 urlpatterns = [
-    url(
-        r'^regione/$',
+    path(
+        'regione/',
         views.RegioneAutocomplete.as_view(),
         name='regione-autocomplete',
     ),
-    url(
-        r'^provincia/$',
+    path(
+        'provincia/',
         views.ProvinciaAutocomplete.as_view(),
         name='provincia-autocomplete',
     ),
-    url(
-        r'^cittametropolitana/$',
+    path(
+        'cittametropolitana/',
         views.CittaMetropolitanaAutocomplete.as_view(),
         name='cittametropolitana-autocomplete',
     ),
-    url(
-        r'^comune/$',
+    path(
+        'comune/',
         views.ComuneAutocomplete.as_view(),
         name='comune-autocomplete',
     ),
