@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('altitudine', models.IntegerField(null=True, blank=True)),
                 ('superficie', models.FloatField(null=True, verbose_name='superficie (kmq)', blank=True)),
                 ('popolazione', models.IntegerField(null=True, blank=True)),
-                ('citta_metropolitana', models.ForeignKey(to='comuni_italiani.CittaMetropolitana', blank=True, null=True)),
+                ('citta_metropolitana', models.ForeignKey(to='comuni_italiani.CittaMetropolitana', on_delete=models.PROTECT, blank=True, null=True)),
             ],
             options={
                 'ordering': ['name'],
@@ -69,11 +69,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='provincia',
             name='regione',
-            field=models.ForeignKey(to='comuni_italiani.Regione'),
+            field=models.ForeignKey(to='comuni_italiani.Regione', on_delete=models.PROTECT),
         ),
         migrations.AddField(
             model_name='comune',
             name='provincia',
-            field=models.ForeignKey(to='comuni_italiani.Provincia'),
+            field=models.ForeignKey(to='comuni_italiani.Provincia', on_delete=models.PROTECT),
         ),
     ]
