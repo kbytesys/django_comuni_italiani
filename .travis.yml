@@ -6,6 +6,8 @@ python:
 - '3.6'
 install:
 - python setup.py -q install
+script:
+  -
 deploy:
   provider: pypi
   skip_existing: true
