@@ -1,15 +1,26 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
+
+
+def readme():
+    with open('README.txt') as f:
+        return f.read()
+
+
+version = '1.4.0'
+
+
 setup(
     name='django-comuni-italiani',
     packages=find_packages(),
     # package_data={'': ['']},
     include_package_data=True,
-    version='1.3.0',
+    version=version,
     install_requires=[
         'Django>=1.7',
     ],
     description='A simple django (>= 1.7) app for Italian cities and regions',
+    long_description=readme(),
     author='Andrea Briganti',
     author_email='kbytesys@gmail.com',
     url='https://github.com/kbytesys/django_comuni_italiani',
@@ -28,6 +39,10 @@ setup(
         'Framework :: Django :: 1.7',
         'Framework :: Django :: 1.8',
         'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.0',
+        'Framework :: Django :: 2.1',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules'

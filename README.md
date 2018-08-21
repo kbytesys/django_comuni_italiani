@@ -206,11 +206,6 @@ e l'altra.
 **Nei nuovi dati non trovo più la superfice e l'altitudine dei comuni!**<br>
 Nei dati del 2016 l'Istat ha deciso di non includere quelle informazioni nelle loro esportazioni.
 
-### Changelog
-25/01/2016 1.3.0 - Aggiornamento dati e importazione al 1 gennaio 2016<br>
-11/12/2015 1.2.0 - Supporto django-autocomplete-light<br>
-30/06/2015 1.1.0 - Chiamate ajax/json per ricerca<br>
-
 ### TODO
  - Form temizzabili per selezionare una provincia da regione e un comune da provincia
 (se si usa [django-autocomplete-light](https://github.com/yourlabs/django-autocomplete-light) non c'è bisogno).
