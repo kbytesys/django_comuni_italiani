@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'comuni_italiani'
+
 urlpatterns = [
     url(r'^elenco/comuni/provincia/(?P<codice>[0-9]+)/$',
         views.elenco_comuni_provincia, name="elenco_comuni_provincia"),
