@@ -56,6 +56,19 @@ urlpatterns = [
 
 ```
 
+In Django 2:
+```python
+
+from django.urls import path, include
+
+urlpatterns = [
+    ...
+    path('comuni_italiani/', include('comuni_italiani.urls', namespace='comuni_italiani')),
+    ...
+]
+
+```
+
 Un dump dei dati più aggiornati al momento del rilascio è distribuito sotto forma di fixture. Esso può essere caricato
 con il seguente comando:
 
