@@ -6,18 +6,18 @@ install:
 - python setup.py -q install
 addons:
   sonarcloud:
-    organization: "kbytesys-github"
+    organization: kbytesys-github
     token:
-      secure: $SONAR_TOKEN
+      secure: "$SONAR_TOKEN"
 script:
-  - sonar-scanner
+- sonar-scanner
 deploy:
   provider: pypi
   skip_existing: true
   user: kbyte
   distributions: sdist bdist_wheel
   password:
-    secure: $PYPISECRET
+    secure: juULmuRROOGQ613cAFAKJ2GjeGf7ASmWzOxNxN/cRTgV5Dann9RWI1Z8xW8bsN3U9SwjWSDCTVW2hh46/3ejpa0ibkeP6QxOaJo9FLsTuvvpnA73gfFXlH+Pmdjfr0AxviOsudInErw4J1rMVy7Z6zpqUXi4y0Vc2X9xv3+hiwTgM5bcDUh5V0nRd6boBw7kKKq6AqyaNpu8iEt3SXCF624ZZAnDIic+9nwOI02uAUsRMqo5Zf3c40XlLMmp4cdheuv4MTDx7irQ6Te25tlQ2J8EUQNrZJWj8p8TBImGQkMViQMa1q2xEm8gHTy5fUmozz2GvzufXOKI4ci8yO3Q1FTHE6z29FwpM+q0Gs4PESL2Y2ADYqisSnS0GBn6ATBgu9YMdjrKJovKGYUj7Ki14NZOYV5AyqUVsjc2Qwr46qfaKPVrCbYLBC842gMRDGNJ6VfI5XWR0FOmKjpNDQlTJpY9i/QFojxAP/oQidWE0zENLaCOVHsSS9hRFl4L3OOyyvItCt/P6DqTIEmaNGSM61eQNY+zsOQxxKrZWBFxJmlqzwZRgDa0hTZ6KTa2r/KeJNf3RN/ZEc9JPIzsZdCj5G8loqn/V6zYYiVqJWJCwwip3Oh2gW1yuyrq/4rsIRSZ0LDBOVF4kqbeUr/MD1qn0w3OKr4RgU0Cd2HtEVr73Js=
   on:
     tags: true
     python: '3.6'
