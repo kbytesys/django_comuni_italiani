@@ -49,14 +49,14 @@ class Command(BaseCommand):
             codice_citta_metropolitana = None
 
             try:
-                codice_citta_metropolitana = int(row['Codice Città Metropolitana'])
+                codice_citta_metropolitana = int(row['Codice Citta Metropolitana'])
             except ValueError:
                 pass
 
             if codice_citta_metropolitana is not None:
                 c = CittaMetropolitana()
                 c.codice_cittametropolitana = codice_citta_metropolitana
-                name = row['Denominazione                  Città metropolitana']
+                name = row['Denominazione                  Citta metropolitana']
                 c.name = name
                 c.save()
             else:

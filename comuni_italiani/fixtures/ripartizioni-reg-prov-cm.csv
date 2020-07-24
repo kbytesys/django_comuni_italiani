@@ -1,6 +1,6 @@
 Codice ripartizione;Codice NUTS1 2006;Codice NUTS1 2010;"Ripartizione geografica
 (Maiuscolo)";Ripartizione geografica;Codice regione;Codice NUTS2 2006 (a);Codice NUTS2 2010 (a);"Denominazione regione
-(Maiuscolo)";Denominazione regione;Codice provincia;Codice Città Metropolitana;Codice NUTS3 2006;Codice NUTS3 2010;Denominazione provincia;Denominazione                  Città metropolitana;Sigla automobilistica
+(Maiuscolo)";Denominazione regione;Codice provincia;Codice Citta Metropolitana;Codice NUTS3 2006;Codice NUTS3 2010;Denominazione provincia;Denominazione                  Citta metropolitana;Sigla automobilistica
 1;ITC;ITC;NORD-OVEST;Nord-ovest;1;ITC1;ITC1;PIEMONTE;Piemonte;1;201;ITC11;ITC11;-;Torino;TO
 1;ITC;ITC;NORD-OVEST;Nord-ovest;1;ITC1;ITC1;PIEMONTE;Piemonte;2;-;ITC12;ITC12;Vercelli;;VC
 1;ITC;ITC;NORD-OVEST;Nord-ovest;1;ITC1;ITC1;PIEMONTE;Piemonte;3;-;ITC15;ITC15;Novara;;NO
@@ -9,7 +9,7 @@ Codice ripartizione;Codice NUTS1 2006;Codice NUTS1 2010;"Ripartizione geografica
 1;ITC;ITC;NORD-OVEST;Nord-ovest;1;ITC1;ITC1;PIEMONTE;Piemonte;6;-;ITC18;ITC18;Alessandria;;AL
 1;ITC;ITC;NORD-OVEST;Nord-ovest;1;ITC1;ITC1;PIEMONTE;Piemonte;96;-;ITC13;ITC13;Biella;;BI
 1;ITC;ITC;NORD-OVEST;Nord-ovest;1;ITC1;ITC1;PIEMONTE;Piemonte;103;-;ITC14;ITC14;Verbano-Cusio-Ossola;;VB
-1;ITC;ITC;NORD-OVEST;Nord-ovest;2;ITC2;ITC2;VALLE D'AOSTA/VALLÉE D'AOSTE;Valle d'Aosta/Vallée d'Aoste;7;-;ITC20;ITC20;Valle d'Aosta/Vallée d'Aoste;;AO
+1;ITC;ITC;NORD-OVEST;Nord-ovest;2;ITC2;ITC2;VALLE D'AOSTA/VALLï¿½E D'AOSTE;Valle d'Aosta/Vallï¿½e d'Aoste;7;-;ITC20;ITC20;Valle d'Aosta/Vallï¿½e d'Aoste;;AO
 1;ITC;ITC;NORD-OVEST;Nord-ovest;3;ITC4;ITC4;LOMBARDIA;Lombardia;12;-;ITC41;ITC41;Varese;;VA
 1;ITC;ITC;NORD-OVEST;Nord-ovest;3;ITC4;ITC4;LOMBARDIA;Lombardia;13;-;ITC42;ITC42;Como;;CO
 1;ITC;ITC;NORD-OVEST;Nord-ovest;3;ITC4;ITC4;LOMBARDIA;Lombardia;14;-;ITC44;ITC44;Sondrio;;SO
@@ -22,8 +22,8 @@ Codice ripartizione;Codice NUTS1 2006;Codice NUTS1 2010;"Ripartizione geografica
 1;ITC;ITC;NORD-OVEST;Nord-ovest;3;ITC4;ITC4;LOMBARDIA;Lombardia;97;-;ITC43;ITC43;Lecco;;LC
 1;ITC;ITC;NORD-OVEST;Nord-ovest;3;ITC4;ITC4;LOMBARDIA;Lombardia;98;-;ITC49;ITC49;Lodi;;LO
 1;ITC;ITC;NORD-OVEST;Nord-ovest;3;ITC4;ITC4;LOMBARDIA;Lombardia;108;-;-;ITC4D;Monza e della Brianza;;MB
-2;ITD;ITH;NORD-EST;Nord-est;4;ITD1;ITH1;TRENTINO-ALTO ADIGE/SÜDTIROL;Trentino-Alto Adige/Südtirol;21;-;ITD10;ITH10;Bolzano/Bozen;;BZ
-2;ITD;ITH;NORD-EST;Nord-est;4;ITD2;ITH2;TRENTINO-ALTO ADIGE/SÜDTIROL;Trentino-Alto Adige/Südtirol;22;-;ITD20;ITH20;Trento;;TN
+2;ITD;ITH;NORD-EST;Nord-est;4;ITD1;ITH1;TRENTINO-ALTO ADIGE/Sï¿½DTIROL;Trentino-Alto Adige/Sï¿½dtirol;21;-;ITD10;ITH10;Bolzano/Bozen;;BZ
+2;ITD;ITH;NORD-EST;Nord-est;4;ITD2;ITH2;TRENTINO-ALTO ADIGE/Sï¿½DTIROL;Trentino-Alto Adige/Sï¿½dtirol;22;-;ITD20;ITH20;Trento;;TN
 2;ITD;ITH;NORD-EST;Nord-est;5;ITD3;ITH3;VENETO;Veneto;23;-;ITD31;ITH31;Verona;;VR
 2;ITD;ITH;NORD-EST;Nord-est;5;ITD3;ITH3;VENETO;Veneto;24;-;ITD32;ITH32;Vicenza;;VI
 2;ITD;ITH;NORD-EST;Nord-est;5;ITD3;ITH3;VENETO;Veneto;25;-;ITD33;ITH33;Belluno;;BL
@@ -46,7 +46,7 @@ Codice ripartizione;Codice NUTS1 2006;Codice NUTS1 2010;"Ripartizione geografica
 2;ITD;ITH;NORD-EST;Nord-est;8;ITD5;ITH5;EMILIA-ROMAGNA;Emilia-Romagna;37;237;ITD55;ITH55;-;Bologna;BO
 2;ITD;ITH;NORD-EST;Nord-est;8;ITD5;ITH5;EMILIA-ROMAGNA;Emilia-Romagna;38;-;ITD56;ITH56;Ferrara;;FE
 2;ITD;ITH;NORD-EST;Nord-est;8;ITD5;ITH5;EMILIA-ROMAGNA;Emilia-Romagna;39;-;ITD57;ITH57;Ravenna;;RA
-2;ITD;ITH;NORD-EST;Nord-est;8;ITD5;ITH5;EMILIA-ROMAGNA;Emilia-Romagna;40;-;ITD58;ITH58;Forlì-Cesena;;FC
+2;ITD;ITH;NORD-EST;Nord-est;8;ITD5;ITH5;EMILIA-ROMAGNA;Emilia-Romagna;40;-;ITD58;ITH58;Forlï¿½-Cesena;;FC
 2;ITD;ITH;NORD-EST;Nord-est;8;ITD5;ITH5;EMILIA-ROMAGNA;Emilia-Romagna;99;-;ITD59;ITH59;Rimini;;RN
 3;ITE;ITI;CENTRO;Centro;9;ITE1;ITI1;TOSCANA;Toscana;45;-;ITE11;ITI11;Massa-Carrara;;MS
 3;ITE;ITI;CENTRO;Centro;9;ITE1;ITI1;TOSCANA;Toscana;46;-;ITE12;ITI12;Lucca;;LU
@@ -107,7 +107,4 @@ Codice ripartizione;Codice NUTS1 2006;Codice NUTS1 2010;"Ripartizione geografica
 5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;91;-;ITG26;ITG26;Nuoro;;NU
 5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;92;-;ITG27;ITG27;Cagliari;;CA
 5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;95;-;ITG28;ITG28;Oristano;;OR
-5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;104;-;ITG29;ITG29;Olbia-Tempio;;OT
-5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;105;-;ITG2A;ITG2A;Ogliastra;;OG
-5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;106;-;ITG2B;ITG2B;Medio Campidano;;VS
-5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;107;-;ITG2C;ITG2C;Carbonia-Iglesias;;CI
+5;ITG;ITG;ISOLE;Isole;20;ITG2;ITG2;SARDEGNA;Sardegna;111;-;	ITG2H;ITG2H;Sud Sardegna;;SU
