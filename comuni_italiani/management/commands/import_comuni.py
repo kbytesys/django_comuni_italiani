@@ -69,7 +69,7 @@ class Command(BaseCommand):
             # Nei dati del 2016 altitudine e superficie non sono stati inseriti
             # altitudine = locale.atoi(row['Altitudine del centro (metri)'])
             # superficie = locale.atof(row['Superficie territoriale (kmq) al 09/10/2011'])
-            popolazione = locale.atoi(row['Popolazione legale 2011 (09/10/2011)'])
+            popolazione = locale.atoi(row['Popolazione legale 2011 (09/10/2011)'].replace('.',''))
             citta_metropolitana_id = None
             try:
                 citta_metropolitana_id = int(row['Codice Città Metropolitana'])
