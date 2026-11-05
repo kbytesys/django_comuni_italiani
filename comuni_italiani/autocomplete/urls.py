@@ -23,4 +23,44 @@ urlpatterns = [
         views.ComuneAutocomplete.as_view(),
         name='comune-autocomplete',
     ),
+    path(
+        'regione/tutti/',
+        views.RegioneAllAutocomplete.as_view(),
+        name='regione-all-autocomplete',
+    ),
+    path(
+        'provincia/tutti/',
+        views.ProvinciaAllAutocomplete.as_view(),
+        name='provincia-all-autocomplete',
+    ),
+    path(
+        'cittametropolitana/tutti/',
+        views.CittaMetropolitanaAllAutocomplete.as_view(),
+        name='cittametropolitana-all-autocomplete',
+    ),
+    path(
+        'comune/tutti/',
+        views.ComuneAllAutocomplete.as_view(),
+        name='comune-all-autocomplete',
+    ),
+    path(
+        'regione/soppressi/',
+        views.RegioneSuppressedAutocomplete.as_view(),
+        name='regione-suppressed-autocomplete',
+    ),
+    path(
+        'provincia/soppressi/',
+        views.ProvinciaSuppressedAutocomplete.as_view(),
+        name='provincia-suppressed-autocomplete',
+    ),
+    path(
+        'cittametropolitana/soppressi/',
+        views.CittaMetropolitanaSuppressedAutocomplete.as_view(),
+        name='cittametropolitana-suppressed-autocomplete',
+    ),
+    path(
+        'comune/soppressi/',
+        views.ComuneSuppressedAutocomplete.as_view(),
+        name='comune-suppressed-autocomplete',
+    ),
 ]

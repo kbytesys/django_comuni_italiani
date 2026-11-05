@@ -111,6 +111,35 @@ Gli URL a disposizione per l'autocompletamento sono i seguenti:
 
 Supportano il _forward_ (filtro selezionando oggetto padre, es. regione => provincia) tutti tranne regione-autocomplete.
 
+Questi URL mostrano solo gli oggetti attivi. Per ognuno esistono anche le varianti con tutti gli oggetti (attivi e
+soppressi) e con i soli soppressi, che supportano lo stesso _forward_. Nei risultati gli oggetti soppressi sono
+indicati con "(soppresso)".
+
+| Solo attivi | Tutti | Solo soppressi |
+|---|---|---|
+| `regione-autocomplete` | `regione-all-autocomplete` | `regione-suppressed-autocomplete` |
+| `provincia-autocomplete` | `provincia-all-autocomplete` | `provincia-suppressed-autocomplete` |
+| `cittametropolitana-autocomplete` | `cittametropolitana-all-autocomplete` | `cittametropolitana-suppressed-autocomplete` |
+| `comune-autocomplete` | `comune-all-autocomplete` | `comune-suppressed-autocomplete` |
+
+#### Campi per i form
+L'autocompletamento decide solo cosa mostrare: la validazione la fa il campo del form, che di default accetta solo
+gli oggetti attivi. Se usate il widget di `comune-all-autocomplete` con un campo normale, un comune soppresso verrà
+mostrato ma rifiutato come "scelta non valida".
+
+Per questo l'app mette a disposizione dei campi che usano lo stesso manager sia per il widget sia per la validazione:
+`RegioneAutocompleteField`, `ProvinciaAutocompleteField`, `CittaMetropolitanaAutocompleteField` e
+`ComuneAutocompleteField`. Il parametro `manager` può valere `'objects'` (solo attivi, default), `'all_objects'`
+(tutti) o `'suppressed_objects'` (solo soppressi); `forward` viene passato al widget.
+
+```python
+from comuni_italiani.autocomplete.fields import ComuneAutocompleteField
+
+class AnagraficaForm(forms.ModelForm):
+    # accetta anche i comuni soppressi, es. per un luogo di nascita
+    citta = ComuneAutocompleteField(manager='all_objects')
+```
+
 ### Un esempio
 
 Model con _ForeignKey_ ad un comune e un form con `django-autocomplete-light`:
@@ -143,22 +172,22 @@ urlpatterns = [
 ```python
 # forms.py
 
-from dal import autocomplete
 from django import forms
+from comuni_italiani.autocomplete.fields import ComuneAutocompleteField
 from . import models
 
 
 class AnagraficaForm(forms.ModelForm):
+    citta = ComuneAutocompleteField()
 
     class Meta:
         model = models.Anagrafica
         fields = ('__all__')
-        widgets = {
-            'comune': autocomplete.ModelSelect2Multiple(
-                url='comune-autocomplete'
-            )
-        }
 ```
+
+In alternativa potete usare direttamente il widget di `django-autocomplete-light`
+(`widgets = {'citta': autocomplete.ModelSelect2(url='comune-autocomplete')}`), ricordando che con le varianti
+"tutti" o "soppressi" dovete impostare anche il `queryset` del campo (es. `Comune.all_objects.all()`).
 
 Potete verificarne il funzionamento nell'admin:
 
