@@ -19,12 +19,15 @@ class BaseAutocomplete(Select2QuerySetView):
             fw_value = self.forwarded.get(self.forwarded_field, None)
 
             if fw_value:
-                qs = qs.filter(**{self.forwarded_field: fw_value})
+                qs = self.filter_forwarded(qs, fw_value)
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
 
         return qs
+
+    def filter_forwarded(self, qs, value):
+        return qs.filter(**{self.forwarded_field: value})
 
     def get_result_label(self, result):
         label = super().get_result_label(result)
@@ -39,10 +42,18 @@ class ProvinciaAutocomplete(BaseAutocomplete):
     model_clazz = models.Provincia
     forwarded_field = 'regione'
 
+    def get_queryset(self):
+        return super().get_queryset().select_related('regione')
+
 
 class CittaMetropolitanaAutocomplete(BaseAutocomplete):
     model_clazz = models.CittaMetropolitana
     forwarded_field = 'regione'
+
+    def filter_forwarded(self, qs, value):
+        # La città metropolitana non ha un campo regione: il suo codice è quello della provincia storica + 200
+        province = models.Provincia.all_objects.filter(regione=value).values_list('pk', flat=True)
+        return qs.filter(codice_cittametropolitana__in=[provincia + 200 for provincia in province])
 
 
 class ComuneAutocomplete(BaseAutocomplete):

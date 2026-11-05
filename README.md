@@ -11,8 +11,10 @@ Questa applicazione django contiene lo stretto necessario per gestire le entità
 
 I requiti sono i seguenti:
 
- - Python 3+
- - Django 1.7+
+ - Python 3.6+
+ - Django 3.2+
+
+Le novità e le note di compatibilità tra le versioni sono nel [CHANGELOG](CHANGELOG.md).
 
 Per l'installazione potete utilizzare pip:
 
@@ -130,7 +132,9 @@ mostrato ma rifiutato come "scelta non valida".
 Per questo l'app mette a disposizione dei campi che usano lo stesso manager sia per il widget sia per la validazione:
 `RegioneAutocompleteField`, `ProvinciaAutocompleteField`, `CittaMetropolitanaAutocompleteField` e
 `ComuneAutocompleteField`. Il parametro `manager` può valere `'objects'` (solo attivi, default), `'all_objects'`
-(tutti) o `'suppressed_objects'` (solo soppressi); `forward` viene passato al widget.
+(tutti) o `'suppressed_objects'` (solo soppressi); `forward` viene passato al widget. Se avete incluso gli url
+dell'autocompletamento con un namespace, indicatelo con il parametro `namespace` oppure, per tutti i campi, con
+l'impostazione `COMUNI_ITALIANI_AUTOCOMPLETE_NAMESPACE`.
 
 ```python
 from comuni_italiani.autocomplete.fields import ComuneAutocompleteField
