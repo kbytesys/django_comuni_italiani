@@ -6,8 +6,12 @@ Regole principali:
  - una riga per codice: lo stato attivo/soppresso è deciso dall'elenco dei comuni attivi;
  - una provincia resta attiva finché almeno un comune attivo usa il suo codice (es. Torino 001 resta attiva anche se
    per l'Istat è stata sostituita dalla Città metropolitana 201);
- - un comune che cambia codice (es. cambio di provincia) viene riconosciuto dal codice catastale e ricodificato sulla
-   stessa riga, così le foreign key esistenti continuano a puntare al comune corretto.
+ - un comune attivo viene riconosciuto prima dal codice catastale, che non cambia quando il comune cambia provincia o
+   nome, e solo dopo dal codice Istat: se il codice è cambiato viene ricodificato sulla stessa riga, così le foreign
+   key esistenti continuano a puntare al comune corretto;
+ - se il codice di un comune attivo è occupato da una riga che non corrisponde a nessun comune attivo (es. una
+   vecchia incarnazione soppressa), la riga viene eliminata solo se nessun altro dato vi fa riferimento, altrimenti
+   viene segnalato un errore e il comune non viene modificato.
 
 Il comando non richiede input ed è pensato per essere eseguito anche da cron: senza --verbose scrive solo gli errori.
 """
@@ -17,7 +21,7 @@ from collections import Counter, defaultdict
 from datetime import date, datetime
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
+from django.db import IntegrityError, transaction
 
 from comuni_italiani.models import CittaMetropolitana, Comune, Provincia, Regione
 
@@ -61,7 +65,8 @@ class Command(BaseCommand):
         parser.add_argument('--data-da', type=data_valida, default=DATA_INIZIO,
                             help='Data iniziale per le soppressioni, GG/MM/AAAA (default %s)' % DATA_INIZIO)
         parser.add_argument('--data-a', type=data_valida, default=None,
-                            help='Data di riferimento, GG/MM/AAAA (default oggi)')
+                            help='Data finale per le soppressioni, GG/MM/AAAA (default oggi). '
+                                 "L'elenco dei comuni attivi è sempre quello di oggi")
         parser.add_argument('--verbose', action='store_true',
                             help="Scrive il dettaglio dell'importazione; senza, scrive solo gli errori")
         parser.add_argument('--dry-run', action='store_true',
@@ -72,17 +77,19 @@ class Command(BaseCommand):
         self.errori = 0
         self.stats = defaultdict(Counter)
 
+        # Gli attivi sono sempre quelli di oggi: una data passata riporterebbe indietro il database
+        oggi = date.today().strftime('%d/%m/%Y')
         data_da = options['data_da']
-        data_a = options['data_a'] or date.today().strftime('%d/%m/%Y')
+        data_a = options['data_a'] or oggi
 
         # Tutti i dati vengono scaricati e controllati prima di toccare il database
-        attivi = self.scarica(PFUN_COMUNI_ATTIVI, pdata=data_a)
+        attivi = self.scarica(PFUN_COMUNI_ATTIVI, pdata=oggi)
         self.controlla(attivi, PFUN_COMUNI_ATTIVI, ['PRO_COM', 'COMUNE_IT', 'COD_CATASTO', 'COD_REG', 'DEN_REG',
                                                    'COD_PROV_STORICO', 'COD_UTS', 'DEN_UTS', 'TIPO_UTS',
                                                    'SIGLA_AUTOMOBILISTICA', 'CC_UTS'], obbligatorio=True)
-        altitudini = self.scarica(PFUN_ALTITUDINE, pdata=data_a)
+        altitudini = self.scarica(PFUN_ALTITUDINE, pdata=oggi)
         self.controlla(altitudini, PFUN_ALTITUDINE, ['PRO_COM', 'ALT'])
-        popolazioni = self.scarica(PFUN_POPOLAZIONE_SUPERFICIE, pdata=data_a)
+        popolazioni = self.scarica(PFUN_POPOLAZIONE_SUPERFICIE, pdata=oggi)
         self.controlla(popolazioni, PFUN_POPOLAZIONE_SUPERFICIE, ['PRO_COM', 'POP_LEG', 'AREA_KMQ'])
         comuni_soppressi = self.scarica(PFUN_COMUNI_SOPPRESSI, pdatada=data_da, pdataa=data_a)
         self.controlla(comuni_soppressi, PFUN_COMUNI_SOPPRESSI, ['PRO_COM_T', 'COMUNE', 'COD_CATASTO', 'COD_UTS',
@@ -94,15 +101,18 @@ class Command(BaseCommand):
         self.controlla(province_soppresse, PFUN_PROVINCE_SOPPRESSE, ['COD_UTS', 'DEN_UTS', 'SIGLA_UTS', 'TIPO_UTS',
                                                                      'DATA_INIZIO_AMMINISTRATIVA'])
 
-        with transaction.atomic():
-            self.aggiorna_regioni(attivi, regioni_soppresse)
-            self.aggiorna_province(attivi, province_soppresse)
-            self.aggiorna_citta_metropolitane(attivi, province_soppresse)
-            self.aggiorna_comuni_attivi(attivi, altitudini, popolazioni)
-            self.aggiorna_comuni_soppressi(comuni_soppressi)
+        try:
+            with transaction.atomic():
+                self.aggiorna_regioni(attivi, regioni_soppresse)
+                self.aggiorna_province(attivi, province_soppresse)
+                self.aggiorna_citta_metropolitane(attivi, province_soppresse)
+                self.aggiorna_comuni_attivi(attivi, altitudini, popolazioni)
+                self.aggiorna_comuni_soppressi(comuni_soppressi)
 
-            if options['dry_run']:
-                transaction.set_rollback(True)
+                if options['dry_run']:
+                    transaction.set_rollback(True)
+        except IntegrityError as e:
+            raise CommandError('Conflitto non risolvibile automaticamente, nessuna modifica salvata: %s' % e)
 
         self.riepilogo(options['dry_run'])
 
@@ -117,7 +127,7 @@ class Command(BaseCommand):
         self.log('Scarico %s' % url)
         try:
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                return json.loads(response.read().decode('utf-8'))['resultset']
+                return json.loads(response.read().decode('utf-8'))['resultset'] or []
         except (OSError, ValueError, KeyError, TypeError) as e:
             raise CommandError('Impossibile scaricare i dati Istat da %s: %s' % (url, e))
 
@@ -290,41 +300,81 @@ class Command(BaseCommand):
     # Comuni
 
     def aggiorna_comuni_attivi(self, attivi, altitudini, popolazioni):
-        esistenti = {c.codice_istat: c for c in Comune.all_objects.all()}
-        codici_attivi = {int(r['PRO_COM']) for r in attivi}
+        esistenti = list(Comune.all_objects.all())
+        per_codice = {c.codice_istat: c for c in esistenti}
+        catastali_attivi = Counter(c.codice_catastale for c in esistenti if not c.suppressed and c.codice_catastale)
+        per_catastale = {c.codice_catastale: c for c in esistenti
+                         if not c.suppressed and c.codice_catastale and catastali_attivi[c.codice_catastale] == 1}
         altitudine = {int(r['PRO_COM']): r['ALT'] for r in altitudini}
         popolazione = {int(r['PRO_COM']): (r['POP_LEG'], r['AREA_KMQ']) for r in popolazioni}
 
-        # Comuni attivi nel db il cui codice non è più attivo: se il loro codice catastale appartiene ad un comune
-        # attivo con un codice che non è nel db, si tratta dello stesso comune che ha cambiato codice.
-        orfani = [c for c in esistenti.values() if not c.suppressed and c.codice_istat not in codici_attivi]
-        catastali_orfani = Counter(c.codice_catastale for c in orfani)
-        orfani = {c.codice_catastale: c for c in orfani if catastali_orfani[c.codice_catastale] == 1}
+        abbinati = set()   # pk delle righe che corrispondono ad un comune attivo Istat
+        protetti = set()   # pk da non sopprimere perché coinvolti in un errore
 
-        ricodifiche = []
+        # 1. Riga del database corrispondente ad ogni comune attivo: prima per codice catastale (stabile anche se il
+        # comune cambia provincia), poi per codice Istat se la riga ha lo stesso catastale (comune ricostituito)
+        abbinamenti = []
         for row in attivi:
-            codice = int(row['PRO_COM'])
-            if codice not in esistenti and row['COD_CATASTO'] in orfani:
-                ricodifiche.append((orfani.pop(row['COD_CATASTO']), codice))
+            codice, catastale = int(row['PRO_COM']), row['COD_CATASTO']
+            comune = per_catastale.get(catastale)
+            stesso_codice = per_codice.get(codice)
+            if comune is None and catastali_attivi[catastale] > 1:
+                # Più comuni attivi con lo stesso catastale: si può scegliere solo quello che ha già il codice giusto
+                if stesso_codice is not None and not stesso_codice.suppressed and \
+                        stesso_codice.codice_catastale == catastale:
+                    comune = stesso_codice
+                else:
+                    duplicati = [c for c in esistenti if not c.suppressed and c.codice_catastale == catastale]
+                    self.errore('Comune %06d %s: nel database ci sono più comuni attivi con catastale %s (%s), '
+                                'ignorato' % (codice, row['COMUNE_IT'], catastale,
+                                              ', '.join('%06d %s' % (c.codice_istat, c.name) for c in duplicati)))
+                    protetti.update(c.pk for c in duplicati)
+                    continue
+            elif comune is None and stesso_codice is not None and \
+                    stesso_codice.codice_catastale in (catastale, None, ''):
+                comune = stesso_codice
+            if comune is not None:
+                abbinati.add(comune.pk)
+            abbinamenti.append((row, comune))
 
-        # Due passaggi con codici temporanei negativi, per non violare il vincolo unique in caso di scambi
+        # 2. Il codice può essere occupato da una riga che non corrisponde a nessun comune attivo: una vecchia
+        # incarnazione soppressa oppure un comune a cui l'Istat ha tolto il codice. Vale il comune attivo: la riga
+        # viene eliminata se nessun dato vi fa riferimento, altrimenti serve un intervento manuale.
+        validi = []
+        for row, comune in abbinamenti:
+            codice = int(row['PRO_COM'])
+            occupante = per_codice.get(codice)
+            if occupante is None or occupante is comune or occupante.pk in abbinati:
+                validi.append((row, comune))
+                continue
+            descrizione = '%06d %s (catastale %s)' % (occupante.codice_istat, occupante.name, occupante.codice_catastale)
+            if self.referenziato(occupante):
+                self.errore('Comune %06d %s: il codice è usato da %s, a cui fanno riferimento altri dati; '
+                            'comune ignorato, serve un intervento manuale' % (codice, row['COMUNE_IT'], descrizione))
+                if comune is not None:
+                    protetti.add(comune.pk)
+                continue
+            occupante.delete()
+            del per_codice[codice]
+            self.stats['comune']['eliminati'] += 1
+            self.log('Eliminato comune %s: il codice ora è di %s' % (descrizione, row['COMUNE_IT']))
+            validi.append((row, comune))
+
+        # 3. Ricodifiche in due passaggi con codici temporanei negativi, così anche uno scambio di codici tra due
+        # comuni non viola il vincolo unique
+        ricodifiche = [(comune, int(row['PRO_COM'])) for row, comune in validi
+                       if comune is not None and comune.codice_istat != int(row['PRO_COM'])]
         for comune, codice in ricodifiche:
             Comune.all_objects.filter(pk=comune.pk).update(codice_istat=-codice)
         for comune, codice in ricodifiche:
             Comune.all_objects.filter(pk=comune.pk).update(codice_istat=codice)
             self.stats['altro']['comuni ricodificati'] += 1
             self.log('Ricodificato comune %s: %06d -> %06d' % (comune.name, comune.codice_istat, codice))
-            del esistenti[comune.codice_istat]
             comune.codice_istat = codice
-            esistenti[codice] = comune
 
-        for row in attivi:
+        # 4. Aggiornamento dei dati
+        for row, comune in validi:
             codice = int(row['PRO_COM'])
-            comune = esistenti.get(codice)
-            if comune is not None and comune.suppressed and comune.codice_catastale != row['COD_CATASTO']:
-                self.errore('Comune %06d %s: il codice è usato dal comune soppresso %s (catastale %s), ignorato' %
-                            (codice, row['COMUNE_IT'], comune.name, comune.codice_catastale))
-                continue
             if comune is None:
                 comune = Comune(codice_istat=codice)
 
@@ -343,9 +393,21 @@ class Command(BaseCommand):
                 valori['popolazione'], valori['superficie'] = popolazione[codice]
             self.salva(comune, valori, '%06d %s' % (codice, row['COMUNE_IT']))
 
-        for codice, comune in esistenti.items():
-            if not comune.suppressed and codice not in codici_attivi:
-                self.salva(comune, {'suppressed': True}, '%06d %s' % (codice, comune.name))
+        # 5. I comuni attivi nel database che non corrispondono più a nessun comune attivo Istat sono soppressi
+        for comune in esistenti:
+            if comune.pk is None or comune.suppressed or comune.pk in abbinati or comune.pk in protetti:
+                continue
+            self.salva(comune, {'suppressed': True}, '%06d %s' % (comune.codice_istat, comune.name))
+
+    def referenziato(self, istanza):
+        """Indica se altri dati, anche dei progetti che usano l'app, fanno riferimento a questa riga."""
+        for relazione in istanza._meta.get_fields(include_hidden=True):
+            if not relazione.auto_created or relazione.concrete:
+                continue
+            if relazione.one_to_many or relazione.one_to_one or relazione.many_to_many:
+                if relazione.related_model._base_manager.filter(**{relazione.field.name: istanza}).exists():
+                    return True
+        return False
 
     def aggiorna_comuni_soppressi(self, comuni_soppressi):
         esistenti = {c.codice_istat: c for c in Comune.all_objects.all()}
@@ -357,6 +419,11 @@ class Command(BaseCommand):
             if comune is not None and not comune.suppressed:
                 # Codice riutilizzato da un comune oggi attivo: vale lo stato più recente
                 self.stats['altro']['soppressi ignorati (codice oggi attivo)'] += 1
+                continue
+            if comune is not None and comune.codice_catastale and comune.codice_catastale != row['COD_CATASTO']:
+                # Soppressione di un altro comune che in passato ha avuto lo stesso codice (es. con --data-a nel
+                # passato): la riga esistente non viene trasformata in un comune diverso
+                self.stats['altro']['soppressi ignorati (codice di un altro comune)'] += 1
                 continue
 
             # Il codice Istat di una città metropolitana è il codice della provincia storica + 200

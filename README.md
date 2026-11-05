@@ -248,7 +248,7 @@ Opzioni:
  soppressioni) e un riepilogo finale. Senza questa opzione vengono scritti solo gli errori.
  - `--dry-run`: esegue tutto senza salvare nulla, utile insieme a `--verbose` per vedere cosa cambierebbe.
  - `--data-da GG/MM/AAAA` e `--data-a GG/MM/AAAA`: intervallo delle soppressioni da importare (default dal 17/03/1861
- ad oggi). `--data-a` è anche la data di riferimento per l'elenco dei comuni attivi.
+ ad oggi). L'elenco dei comuni attivi è sempre quello di oggi: non è possibile riportare il database ad una data passata.
 
 Il comando non richiede alcun input, può quindi essere eseguito da cron. In caso di errori termina con un exit code
 diverso da zero; se non riesce a scaricare i dati non modifica il database.
@@ -264,9 +264,17 @@ diverso da zero; se non riesce a scaricare i dati non modifica il database.
  soppressione. **Codice catastale**: è quello del codice fiscale, resta uguale anche se il comune cambia provincia.
  - Nessuno dei due identifica un comune per sempre: per questo i comuni hanno un id autogenerato, che è ciò a cui
  puntano le vostre foreign key, e il comando fa in modo che resti lo stesso.
- - Un comune che cambia codice viene riconosciuto tramite il codice catastale e **ricodificato sulla stessa riga**.
+ - Un comune attivo viene riconosciuto **prima dal codice catastale** e solo dopo dal codice Istat. Se il codice è
+ cambiato, il comune viene **ricodificato sulla stessa riga**.
  - Nel database c'è **una riga per codice Istat**, con l'ultimo stato noto. Se un codice soppresso è oggi usato da un
  comune attivo, vale il comune attivo.
+ - Se il codice di un comune attivo è occupato da una riga che non corrisponde più a nessun comune attivo (per esempio
+ la vecchia incarnazione soppressa di un comune che riprende un codice avuto in passato), quella riga viene eliminata
+ solo se nessun dato vi fa riferimento. Altrimenti il comando segnala un errore e non modifica quel comune: serve un
+ intervento manuale. Lo stesso vale se nel database ci sono più comuni attivi con lo stesso codice catastale.
+ - Il database è allineato all'Istat ad ogni esecuzione: le modifiche fatte a mano (per esempio dall'admin) vengono
+ sovrascritte. In particolare non modificate il codice catastale dei comuni, perché è ciò che permette di
+ riconoscerli quando cambiano codice.
  - Una provincia resta attiva finché almeno un comune attivo usa il suo codice. Per esempio Torino (001) resta attiva
  anche se dal 2015 per l'Istat è stata sostituita dalla città metropolitana (201), che è presente tra le città
  metropolitane. Lo stesso vale per le ex province del Friuli-Venezia Giulia e per i liberi consorzi siciliani.
@@ -276,7 +284,9 @@ diverso da zero; se non riesce a scaricare i dati non modifica il database.
 
 #### Comandi deprecati
 I comandi `import_regioni_prov` e `import_comuni` sono ancora presenti per compatibilità, ma sono deprecati: leggono
-il vecchio formato csv dell'Istat e non gestiscono i soppressi. Usate `aggiorna_comuni`.
+il vecchio formato csv dell'Istat e non gestiscono i soppressi. Usate `aggiorna_comuni`. Per non rovinare i dati,
+si rifiutano di partire se il database contiene oggetti soppressi, cioè dopo aver usato `aggiorna_comuni` o caricato
+la nuova fixture.
 
 ```bash
 
