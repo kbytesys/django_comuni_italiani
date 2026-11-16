@@ -21,7 +21,7 @@ class NotRunningInTTYException(Exception):
     pass
 
 class Command(BaseCommand):
-    help = 'Importa i comuni italiani'
+    help = 'Importa i comuni italiani (deprecato, usare aggiorna_comuni)'
 
     def add_arguments(self, parser):
         parser.add_argument('-csvfile', type=argparse.FileType('r', encoding='iso-8859-15'),
@@ -32,6 +32,10 @@ class Command(BaseCommand):
         return super(Command, self).execute(*args, **options)
 
     def handle(self, *args, **options):
+        # Il vecchio formato non conosce i soppressi: su dati importati con aggiorna_comuni li rovinerebbe
+        if any(m.suppressed_objects.exists() for m in (Regione, Provincia, CittaMetropolitana, Comune)):
+            raise CommandError('Il database contiene dati soppressi importati con aggiorna_comuni: questo comando '
+                               'è deprecato e li rovinerebbe. Usare ./manage.py aggiorna_comuni')
 
         if hasattr(self.stdin, 'isatty') and not self.stdin.isatty():
             raise NotRunningInTTYException("Not running in a TTY")

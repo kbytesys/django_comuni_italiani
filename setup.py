@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 
 
 def readme():
-    with open('README.txt') as f:
+    with open('README.md', encoding='utf-8') as f:
         return f.read()
 
 
-version = '1.4.1'
+version = '1.5.0'
 
 
 setup(
@@ -17,10 +17,11 @@ setup(
     include_package_data=True,
     version=version,
     install_requires=[
-        'Django>=1.7',
+        'Django>=3.2',
     ],
-    description='A simple django (>= 1.7) app for Italian cities and regions',
+    description='A simple django (>= 3.2) app for Italian cities and regions, including the suppressed ones',
     long_description=readme(),
+    long_description_content_type='text/markdown',
     author='Andrea Briganti',
     author_email='kbytesys@gmail.com',
     url='https://github.com/kbytesys/django_comuni_italiani',
@@ -36,13 +37,8 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Framework :: Django',
-        'Framework :: Django :: 1.7',
-        'Framework :: Django :: 1.8',
-        'Framework :: Django :: 1.9',
-        'Framework :: Django :: 1.10',
-        'Framework :: Django :: 1.11',
-        'Framework :: Django :: 2.0',
-        'Framework :: Django :: 2.1',
+        'Framework :: Django :: 3.2',
+        'Framework :: Django :: 4.2',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules'

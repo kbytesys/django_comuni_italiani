@@ -12,13 +12,17 @@ default_regioni_file = os.path.join(
 )
 
 class Command(BaseCommand):
-    help = 'Importa regioni e province italiane'
+    help = 'Importa regioni e province italiane (deprecato, usare aggiorna_comuni)'
 
     def add_arguments(self, parser):
         parser.add_argument('-csvfile', type=argparse.FileType('r', encoding='iso-8859-15'),
                             default=default_regioni_file)
 
     def handle(self, *args, **options):
+        # Il vecchio formato non conosce i soppressi: su dati importati con aggiorna_comuni li riattiverebbe
+        if any(m.suppressed_objects.exists() for m in (Regione, Provincia, CittaMetropolitana, Comune)):
+            raise CommandError('Il database contiene dati soppressi importati con aggiorna_comuni: questo comando '
+                               'è deprecato e li rovinerebbe. Usare ./manage.py aggiorna_comuni')
 
         csvfile = options['csvfile']
 
